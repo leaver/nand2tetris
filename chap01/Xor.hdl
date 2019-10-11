@@ -1,7 +1,4 @@
-/*   Not gate:
-      If a=0 then out =1
-      If a=1 then out = 0.  
-	
+/*
       Nand(a,b) = -(a.b) = -a + -b
       Not(a) = Nand(a,a) = -a + -a = -a
       And(a,b) = a.b = -(-(a.b)) = Not(Nand(a,b)) = Nand(Nand(a,b), Nand(a,b))
@@ -14,10 +11,21 @@
       Xor(a,b) = a.-b + -a.b = Or(a.-b, -a.b)
                = Nand(Nand(a.-b, a.-b), Nand(-a.b, -a.b))
 */
-	  
-CHIP Not {
-      IN in;
-      OUT out;
-      PARTS:
-      Nand(a = in, b = in, out = out);
+
+CHIP Xor{
+    IN a,b;
+    OUT out;
+    PARTS:
+    // calc a.-b
+    Nand(a=b, b=b, out=w1);
+    Nand(a=a, b=w1, out=w2);
+    Nand(a=w2,b=w2, out=w3);
+    // calc -a.b
+    Nand(a=a, b=a, out=w4);
+    Nand(a=w4,b=b, out=w5);
+    Nand(a=w5,b=w5, out=w6);
+    // calc xor(a,b)
+    Nand(a=w3,b=w3, out=w7);
+    Nand(a=w6,b=w6, out=w8);
+    Nand(a=w7,b=w8, out=out);
 }
